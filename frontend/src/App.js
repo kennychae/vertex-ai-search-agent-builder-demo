@@ -5,6 +5,8 @@ import SearchComponent from "./components/SearchComponent";
 import ResponseItem from "./components/SearchResponseList";
 import ParameterPanel from "./components/ParameterPanel";
 import { SearchProvider, SearchContext } from "./context/SearchContext";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 /**
  * The main application component.
@@ -49,11 +51,19 @@ function App() {
           <div className="flex items-baseline">
             <ParameterPanel />
             <SearchContext.Consumer>
-              {({ searchResults }) => (
-                <div className="flex w-3/4 flex-col space-y-4 overflow-y-auto">
-                  <ResponseItem response={searchResults} />
-                </div>
-              )}
+              {({ searchResults }) => {
+                const summaryText =
+                  searchResults?.summary?.summaryText ??
+                  "Summary will appear here for your answers";
+
+                return (
+                  <div className="prose max-w-none text-gray-800">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {summaryText}
+                    </ReactMarkdown>
+                  </div>
+                );
+              }}
             </SearchContext.Consumer>
           </div>
         </div>
