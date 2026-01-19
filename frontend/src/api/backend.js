@@ -1,7 +1,8 @@
 import axios from "axios";
+import os;
 
 // const HOST = "https://vertexai-search-demo-xiswadvybq-as.a.run.app" ;
-const HOST = "http://localhost:8080";
+const HOST = os.getenv("HOST");
 /**
  * Sends a search request to the backend API.
  *
