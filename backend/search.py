@@ -73,11 +73,25 @@ def search_discovery_engine(
         # https://cloud.google.com/generative-ai-app-builder/docs/get-search-summaries
         summary_spec=discoveryengine.SearchRequest.ContentSearchSpec.SummarySpec(
             summary_result_count=summary_result_count,
+        
+            # [1] 같은 인용이 “요약”을 망치면 기본은 끄는 걸 추천
             include_citations=include_citations,
+        
             ignore_adversarial_query=True,
             use_semantic_chunks=use_semantic_chunks,
+        
             model_spec=discoveryengine.SearchRequest.ContentSearchSpec.SummarySpec.ModelSpec(
                 version="stable",
+            ),
+        
+            # 스타일 설정
+            model_prompt_spec=discoveryengine.SearchRequest.ContentSearchSpec.SummarySpec.ModelPromptSpec(
+                preamble=(
+                    "너는 검색 결과에 대한 정보를 사용자에게 잘 전달하기 위해 요약하는 비서다.\n"
+                    "- 한국어로 작성한다.\n"
+                    "- 규칙/예시/장황한 설명 나열은 제거하고, 핵심 절차만 bullet로 정리한다.\n"
+                    "- 불필요한 기호를 남발하지 않는다.\n"
+                )
             ),
         ),
     )
