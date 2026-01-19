@@ -5,16 +5,10 @@ import SearchComponent from "./components/SearchComponent";
 import ResponseItem from "./components/SearchResponseList";
 import ParameterPanel from "./components/ParameterPanel";
 import { SearchProvider, SearchContext } from "./context/SearchContext";
+
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-/**
- * The main application component.
- *
- * Renders the search bar, summary, and search results.
- *
- * @returns {JSX.Element} The JSX element representing the application.
- */
 function App() {
   return (
     <SearchProvider>
@@ -23,10 +17,10 @@ function App() {
           <h1 className="text-2xl font-bold text-center text-white mb-6">
             Vertex AI Search Engine Demo
           </h1>
+
           <div className="flex w-full items-start justify-start mb-8 ml-4">
             <SearchComponent />
           </div>
-
           <div className="bg-white rounded-md p-4 w-full mb-8">
             <div className="flex items-start">
               <img
@@ -34,36 +28,36 @@ function App() {
                 alt="gemini"
                 className="w-6 h-6 mr-4"
               />
-              <div className="block">
+              <div className="block w-full">
                 <p className="text-xs">Summary</p>
+
                 <SearchContext.Consumer>
-                  {({ searchResults }) => (
-                    <h1 className="text-xl font-medium text-start mb-6">
-                      {searchResults && searchResults.summary
-                        ? searchResults.summary.summaryText
-                        : "Summary will appear here for your answers"}
-                    </h1>
-                  )}
+                  {({ searchResults }) => {
+                    const summaryText =
+                      searchResults?.summary?.summaryText ??
+                      "Summary will appear here for your answers";
+
+                    return (
+                      <div className="prose prose-slate max-w-none">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {summaryText}
+                        </ReactMarkdown>
+                      </div>
+                    );
+                  }}
                 </SearchContext.Consumer>
               </div>
             </div>
           </div>
+
           <div className="flex items-baseline">
             <ParameterPanel />
             <SearchContext.Consumer>
-              {({ searchResults }) => {
-                const summaryText =
-                  searchResults?.summary?.summaryText ??
-                  "Summary will appear here for your answers";
-
-                return (
-                  <div className="prose max-w-none text-gray-800">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {summaryText}
-                    </ReactMarkdown>
-                  </div>
-                );
-              }}
+              {({ searchResults }) => (
+                <div className="flex w-3/4 flex-col space-y-4 overflow-y-auto">
+                  <ResponseItem response={searchResults} />
+                </div>
+              )}
             </SearchContext.Consumer>
           </div>
         </div>
